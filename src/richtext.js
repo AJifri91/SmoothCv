@@ -26,7 +26,15 @@ export function sanitize(html) {
   return doc.body.innerHTML;
 }
 
-export const isBlank = (html) => !html || !html.replace(/<[^>]*>|&nbsp;/g, '').trim();
+// Header link addresses: bare "github.com/x" gets https://, anything not web/mail/phone is dropped.
+export function safeUrl(url) {
+  const u = (url ?? '').trim();
+  if (!u) return null;
+  const full = /^[a-z][a-z0-9+.-]*:/i.test(u) ? u : `https://${u}`;
+  return /^(https?:|mailto:|tel:)/i.test(full) ? full : null;
+}
+
+export const isBlank =(html) => !html || !html.replace(/<[^>]*>|&nbsp;/g, '').trim();
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

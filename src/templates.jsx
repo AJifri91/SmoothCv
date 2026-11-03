@@ -1,5 +1,5 @@
 // Template definitions + turning CV data into measurable blocks per column.
-import { sanitize, isBlank } from './richtext.js';
+import { sanitize, isBlank, safeUrl } from './richtext.js';
 
 // cols: paginated columns, left to right. topHeader: header is a full-width band on page 1.
 export const TEMPLATES = {
@@ -20,11 +20,21 @@ function Photo({ p }) {
 }
 
 function Contact({ p }) {
-  const items = [p.email, p.phone, p.location, p.website].filter(Boolean);
+  const items = [
+    { text: p.email, href: p.email && `mailto:${p.email.trim()}` },
+    { text: p.phone, href: p.phone && `tel:${p.phone.replace(/[^\d+]/g, '')}` },
+    { text: p.location },
+    { text: p.website, href: safeUrl(p.website) },
+    ...(p.links ?? []).map((l) => ({ text: l.label || l.url, href: safeUrl(l.url) })),
+  ].filter((it) => it.text?.trim());
   const extra = (p.extra ?? '').split('\n').filter((l) => l.trim());
   return (
     <>
-      <div className="contact">{items.map((t, i) => <span key={i}>{t}</span>)}</div>
+      <div className="contact">
+        {items.map((it, i) => (
+          <span key={i}>{it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer">{it.text}</a> : it.text}</span>
+        ))}
+      </div>
       {extra.map((l, i) => <div className="extra" key={i}>{l}</div>)}
     </>
   );

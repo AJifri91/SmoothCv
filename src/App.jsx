@@ -14,6 +14,7 @@ function normalize(d) {
   d = structuredClone(d);
   d.style = { ...DEFAULT_STYLE, ...d.style };
   d.personal.photo ??= '';
+  d.personal.links ??= [];
   d.personal.summary = toHtml(d.personal.summary);
   for (const s of d.sections) for (const e of s.entries) e.description = toHtml(e.description);
   return d;
@@ -257,6 +258,17 @@ export default function App() {
             <Field label="Phone" value={p.phone} onChange={setP('phone')} />
             <Field label="Location" value={p.location} onChange={setP('location')} />
             <Field label="Website" value={p.website} onChange={setP('website')} />
+          </div>
+          <div className="field">
+            <span>Header links (shown as clickable text, e.g. LinkedIn, GitHub)</span>
+            {p.links.map((l, li) => (
+              <div className="link-row" key={l.id}>
+                <input aria-label="Link text" placeholder="LinkedIn" value={l.label} onChange={(e) => edit((d) => (d.personal.links[li].label = e.target.value))} />
+                <input aria-label="Link address" placeholder="linkedin.com/in/you" value={l.url} onChange={(e) => edit((d) => (d.personal.links[li].url = e.target.value))} />
+                <button type="button" className="ghost" aria-label={`Remove link ${l.label}`} onClick={() => edit((d) => d.personal.links.splice(li, 1))}>✕</button>
+              </div>
+            ))}
+            <button type="button" className="add" onClick={() => edit((d) => d.personal.links.push({ id: uid(), label: '', url: '' }))}>+ Add link</button>
           </div>
           <Field label="Extra header lines (one per line, e.g. languages, relocation)" value={p.extra} onChange={setP('extra')} multiline />
           <RichText label="Profile summary" value={p.summary} onChange={setP('summary')} />

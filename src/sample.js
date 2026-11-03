@@ -26,6 +26,10 @@ export const SAMPLE = {
     phone: '+1 555 0142',
     location: 'Portland, OR',
     website: 'jordanavery.example',
+    links: [
+      { id: 'k1', label: 'LinkedIn', url: 'https://www.linkedin.com/in/jordan-avery-example' },
+      { id: 'k2', label: 'GitHub', url: 'https://github.com/jordan-avery-example' },
+    ],
     extra: 'Open to relocation',
     summary:
       'Product designer with 9 years of experience turning messy workflows into calm, usable tools. I work closely with engineering, run lightweight research, and care about accessibility and design systems that teams actually adopt.',

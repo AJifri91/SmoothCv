@@ -58,6 +58,9 @@ summary::marker { color: var(--muted); }
   border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; background: #fff;
 }
 .field textarea { resize: vertical; }
+.link-row { display: grid; grid-template-columns: 1fr 1.6fr auto; gap: 6px; }
+.link-row + .link-row { margin-top: 6px; }
+.link-row input { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; min-width: 0; }
 .field input:focus, .field textarea:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
 .check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); margin-top: 14px; }
 .check.tight { margin-top: 4px; }
