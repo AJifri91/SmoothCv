@@ -149,6 +149,8 @@ function Slider({ label, unit, min, max, step, value, onChange }) {
   );
 }
 
+const pick = (o, keys) => Object.fromEntries(keys.map((k) => [k, o[k]]));
+
 function move(arr, i, d) {
   const j = i + d;
   if (j >= 0 && j < arr.length) [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -164,19 +166,52 @@ function Field({ label, value, onChange, multiline, placeholder }) {
   );
 }
 
-function Tools({ onUp, onDown, onDelete, what }) {
+const Eye = ({ off }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+    <circle cx="12" cy="12" r="3" />
+    {off && <path d="M4 4l16 16" />}
+  </svg>
+);
+
+function Tools({ onUp, onDown, onDelete, onToggle, hidden, onDuplicate, what }) {
   // preventDefault: these sit inside <summary>, where a click would also toggle the card
-  const btn = (fn, label, icon) => (
-    <button type="button" aria-label={`${label} ${what}`} onClick={(e) => (e.preventDefault(), fn())}>{icon}</button>
+  const btn = (fn, label, icon, title = label) => (
+    <button type="button" title={title} aria-label={`${label} ${what}`} onClick={(e) => (e.preventDefault(), fn())}>{icon}</button>
   );
   return (
     <span className="tools">
+      {onToggle && btn(onToggle, hidden ? 'Show' : 'Hide', <Eye off={hidden} />, hidden ? 'Hidden from CV – click to show' : 'Hide from CV')}
+      {onDuplicate && btn(onDuplicate, 'Duplicate', '⧉')}
       {btn(onUp, 'Move up', '↑')}
       {btn(onDown, 'Move down', '↓')}
       {btn(onDelete, 'Delete', '✕')}
     </span>
   );
 }
+
+// Section types offered by "Add section" (the kinds FlowCV offers); short lists default to inline + side column.
+const PRESETS = [
+  ['Experience', {}],
+  ['Education', {}],
+  ['Projects', {}],
+  ['Skills', { side: true, inline: true }],
+  ['Languages', { side: true, inline: true }],
+  ['Certifications', { side: true }],
+  ['Courses', {}],
+  ['Awards', {}],
+  ['Publications', {}],
+  ['Volunteering', {}],
+  ['Interests', { side: true, inline: true }],
+  ['References', {}],
+  ['Custom', {}],
+];
+
+// The bundled fonts (see fonts.js); any of them can override a template's own font.
+const FONTS = ['Source Serif 4', 'Inter', 'Lato', 'Nunito Sans', 'Rubik'];
+
+const isBackup = (d) =>
+  d && typeof d.personal === 'object' && Array.isArray(d.sections) && d.sections.every((s) => s && Array.isArray(s.entries));
 
 export default function App() {
   const [data, setData] = useState(load);
@@ -199,6 +234,34 @@ export default function App() {
   const st = data.style;
   const setP = (k) => (v) => edit((d) => (d.personal[k] = v));
   const setS = (k) => (v) => edit((d) => (d.style[k] = v));
+
+  // Your CV lives only in this browser, so offer a file copy to keep or move to another device.
+  const saveBackup = () => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(p.name || 'cv').trim().replace(/[^\w-]+/g, '_')}-smoothcv.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const loadBackup = async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      if (file.size > 5e6) throw new Error('That file is too large to be a SmoothCv backup.');
+      let d;
+      try {
+        d = JSON.parse(await file.text());
+      } catch {
+        throw new Error('That file is not valid JSON.');
+      }
+      if (!isBackup(d)) throw new Error('That file is not a SmoothCv backup.');
+      if (confirm('Replace your current CV with this backup?')) setData({ ...normalize(d), isSample: false });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   const onPhoto = async (e) => {
     const file = e.target.files[0];
@@ -275,12 +338,40 @@ export default function App() {
             <Slider label="Top & bottom margin" unit="mm" min={4} max={35} step={1} value={st.marginY} onChange={setS('marginY')} />
             <Slider label="Bullet indent" unit="mm" min={2} max={12} step={0.5} value={st.indent} onChange={setS('indent')} />
             <Slider label="Photo size" unit="mm" min={15} max={50} step={1} value={st.photoSize} onChange={setS('photoSize')} />
+            <Slider label="Name size" unit="×" min={0.7} max={1.4} step={0.05} value={st.nameScale} onChange={setS('nameScale')} />
+            {TEMPLATES[data.template]?.cols.length > 1 && (
+              <Slider
+                label="Side column width"
+                unit="%"
+                min={20}
+                max={60}
+                step={1}
+                value={st.sideWidth ?? (data.template === 'duo' ? 50 : 30)}
+                onChange={setS('sideWidth')}
+              />
+            )}
+          </div>
+          <div className="grid2">
+            <label className="field">
+              <span>Font</span>
+              <select value={st.font} onChange={(e) => setS('font')(e.target.value)}>
+                <option value="">Template default</option>
+                {FONTS.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span>Page size</span>
+              <select value={st.pageFormat} onChange={(e) => setS('pageFormat')(e.target.value)}>
+                <option value="A4">A4 (210 × 297 mm)</option>
+                <option value="Letter">US Letter (8.5 × 11 in)</option>
+              </select>
+            </label>
           </div>
           <label className="check">
             <input type="checkbox" checked={!!st.pageNumbers} onChange={(e) => setS('pageNumbers')(e.target.checked)} />
             Page numbers
           </label>
-          <button type="button" className="add" onClick={() => edit((d) => (d.style = { ...DEFAULT_STYLE, photoShape: d.style.photoShape, pageNumbers: d.style.pageNumbers }))}>
+          <button type="button" className="add" onClick={() => edit((d) => (d.style = { ...DEFAULT_STYLE, ...pick(d.style, ['photoShape', 'pageNumbers', 'pageFormat', 'font']) }))}>
             Reset spacing
           </button>
         </details>
@@ -326,11 +417,13 @@ export default function App() {
         </details>
 
         {data.sections.map((s, si) => (
-          <details open className="card" key={s.id}>
+          <details open className={`card${s.hidden ? ' is-hidden' : ''}`} key={s.id}>
             <summary>
               {s.title || 'Untitled section'}
               <Tools
                 what="section"
+                hidden={s.hidden}
+                onToggle={() => edit((d) => (d.sections[si].hidden = !d.sections[si].hidden))}
                 onUp={() => edit((d) => move(d.sections, si, -1))}
                 onDown={() => edit((d) => move(d.sections, si, 1))}
                 onDelete={() => confirm(`Delete section "${s.title}"?`) && edit((d) => d.sections.splice(si, 1))}
@@ -347,17 +440,24 @@ export default function App() {
                   <input type="checkbox" checked={!!s.inline} onChange={(e) => edit((d) => (d.sections[si].inline = e.target.checked))} />
                   Show entries inline (A | B | C)
                 </label>
+                <label className="check tight">
+                  <input type="checkbox" checked={!!s.pageBreak} onChange={(e) => edit((d) => (d.sections[si].pageBreak = e.target.checked))} />
+                  Start on a new page
+                </label>
               </div>
             </div>
             {s.entries.map((e, ei) => {
               const setE = (k) => (v) => edit((d) => (d.sections[si].entries[ei][k] = v));
               return (
-                <details className="entry-card" key={e.id}>
+                <details className={`entry-card${e.hidden ? ' is-hidden' : ''}`} key={e.id}>
                   <summary>
                     {e.title || 'New entry'}
                     {e.subtitle && <em> · {e.subtitle}</em>}
                     <Tools
                       what="entry"
+                      hidden={e.hidden}
+                      onToggle={() => edit((d) => (d.sections[si].entries[ei].hidden = !d.sections[si].entries[ei].hidden))}
+                      onDuplicate={() => edit((d) => d.sections[si].entries.splice(ei + 1, 0, { ...structuredClone(e), id: uid() }))}
                       onUp={() => edit((d) => move(d.sections[si].entries, ei, -1))}
                       onDown={() => edit((d) => move(d.sections[si].entries, ei, 1))}
                       onDelete={() => edit((d) => d.sections[si].entries.splice(ei, 1))}
@@ -377,13 +477,29 @@ export default function App() {
           </details>
         ))}
 
-        <button
-          type="button"
-          className="add big"
-          onClick={() => edit((d) => d.sections.push({ id: uid(), title: 'New section', side: false, entries: [blankEntry()] }))}
-        >
-          + Add section
-        </button>
+        <div className="add-section">
+          <span>Add section</span>
+          <div className="preset-grid">
+            {PRESETS.map(([title, opts]) => (
+              <button
+                key={title}
+                type="button"
+                className="ghost"
+                onClick={() => edit((d) => d.sections.push({ id: uid(), title: title === 'Custom' ? 'New section' : title, side: false, ...opts, entries: [blankEntry()] }))}
+              >
+                + {title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="backup">
+          <button type="button" className="ghost" onClick={saveBackup}>Save backup (.json)</button>
+          <label className="ghost file">
+            Load backup
+            <input type="file" accept="application/json,.json" onChange={loadBackup} />
+          </label>
+        </div>
       </main>
 
       <Preview data={data} />

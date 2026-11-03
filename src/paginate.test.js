@@ -32,6 +32,11 @@ test('first-page offset only shrinks page 1', () => {
   assert.deepEqual(pages, [{ main: ['a'] }, { main: ['b'] }, { main: ['c', 'd'] }]);
 });
 
+test('page break forces a new page, but not on an empty one', () => {
+  const pages = paginate({ main: [b('pb0', 0, 'pagebreak'), b('a', 10), b('pb1', 0, 'pagebreak'), b('c', 10)] }, { main: 100 });
+  assert.deepEqual(pages, [{ main: ['a'] }, { main: ['c'] }]);
+});
+
 test('empty input yields one blank page', () => {
   assert.deepEqual(paginate({ main: [] }, { main: 100 }), [{}]);
 });

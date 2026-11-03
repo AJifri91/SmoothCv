@@ -2,7 +2,9 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { buildBlocks } from './templates.jsx';
 import { paginate } from './paginate.js';
 
-const PAGE_PX = 210 * (96 / 25.4); // A4 width in CSS px
+// Page sizes in mm (FlowCV offers the same two).
+export const FORMATS = { A4: [210, 297], Letter: [215.9, 279.4] };
+const MM_PX = 96 / 25.4;
 
 function Blk({ b }) {
   return (
@@ -21,9 +23,14 @@ export default function Preview({ data }) {
   const measureRef = useRef(null);
   const probeRef = useRef(null);
 
-  // Plain function, not a component: an inline component would remount on every render.
   const st = data.style;
+  const [pageW, pageH] = FORMATS[st.pageFormat] ?? FORMATS.A4;
   const vars = {
+    '--page-w': `${pageW}mm`,
+    '--page-h': `${pageH}mm`,
+    '--name-scale': st.nameScale ?? 1,
+    ...(st.sideWidth ? { '--side-w': `${st.sideWidth}%` } : {}),
+    ...(st.font ? { fontFamily: `'${st.font}', sans-serif` } : {}),
     '--accent': data.accent,
     '--fs': `${st.fontSize}pt`,
     '--lh': st.lineHeight,
@@ -35,6 +42,7 @@ export default function Preview({ data }) {
     '--photo': `${st.photoSize}mm`,
   };
   // withTop: render the full-width header band (page 1 only); pnum: "n/total" footer text
+  // Plain function, not a component: an inline component would remount on every render.
   const page = (fill, { extra = '', ref, withTop = false, pnum } = {}) => (
     <div ref={ref} className={`page tpl-${tpl.id} photo-${st.photoShape} ${extra}`} style={vars}>
       {withTop && top.length > 0 && (
@@ -86,7 +94,7 @@ export default function Preview({ data }) {
   // Fit the page to the pane width. Measured up front and on window resize as well,
   // because ResizeObserver callbacks can be delayed (background tabs, some mobile browsers).
   useLayoutEffect(() => {
-    const fit = () => setScale(Math.min(1, (paneRef.current.clientWidth - 64) / PAGE_PX));
+    const fit = () => setScale(Math.min(1, (paneRef.current.clientWidth - 64) / (pageW * MM_PX)));
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(paneRef.current);
@@ -95,7 +103,7 @@ export default function Preview({ data }) {
       ro.disconnect();
       window.removeEventListener('resize', fit);
     };
-  }, []);
+  }, [pageW]);
 
   const shown = pages ?? [Object.fromEntries(Object.entries(cols).map(([c, l]) => [c, l.map((b) => b.key)]))];
 
@@ -108,7 +116,9 @@ export default function Preview({ data }) {
       <div className="page-count" role="status">
         {shown.length} page{shown.length > 1 ? 's' : ''}
       </div>
-      <div className="pages" style={{ '--s': scale }}>
+      {/* print paper size follows the chosen format */}
+      <style>{`@page { size: ${st.pageFormat === 'Letter' ? 'letter' : 'A4'}; margin: 0; }`}</style>
+      <div className="pages" style={{ '--s': scale, '--page-w': `${pageW}mm`, '--page-h': `${pageH}mm` }}>
         {shown.map((pg, i) => (
           <div className="page-box" key={i}>
             {page((c) => (pg[c] ?? []).map((k) => byKey[k]).filter(Boolean).map((b) => <Blk key={b.key} b={b} />), {

@@ -116,11 +116,13 @@ export function buildBlocks(data) {
   }
 
   for (const s of data.sections) {
-    if (!s.entries.length) continue;
+    const entries = s.entries.filter((e) => !e.hidden);
+    if (s.hidden || !entries.length) continue;
     const col = s.side && cols.side ? 'side' : 'main';
+    if (s.pageBreak) add(col, `${s.id}-break`, 'pagebreak', null);
     heading(col, `${s.id}-h`, s.title);
-    if (s.inline) add(col, `${s.id}-inline`, 'entry', <Inline entries={s.entries} />, true);
-    else s.entries.forEach((e, i) => add(col, `${s.id}-${e.id}`, 'entry', <Entry e={e} />, i === s.entries.length - 1));
+    if (s.inline) add(col, `${s.id}-inline`, 'entry', <Inline entries={entries} />, true);
+    else entries.forEach((e, i) => add(col, `${s.id}-${e.id}`, 'entry', <Entry e={e} />, i === entries.length - 1));
   }
   return { tpl, top, cols };
 }

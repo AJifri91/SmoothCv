@@ -1,8 +1,8 @@
-﻿/* A4 page + the three templates. Sizes in mm/pt/em so screen and print match.
+/* A4 page + the three templates. Sizes in mm/pt/em so screen and print match.
    Spacing knobs arrive as CSS variables set on .page by Preview. */
 .page {
-  width: 210mm;
-  height: 297mm;
+  width: var(--page-w);
+  height: var(--page-h);
   overflow: hidden;
   display: flex;
   flex-direction: column; /* optional full-width band, then the columns row */
@@ -26,7 +26,7 @@
 .blk-entry { padding-bottom: var(--entry-gap); }
 .blk.last, .blk-header { padding-bottom: var(--section-gap); }
 .page h1, .page h2, .page p, .page ul, .page ol { margin: 0; }
-.page h1 { font-size: 2.3em; line-height: 1.15; }
+.page h1 { font-size: calc(2.3em * var(--name-scale, 1)); line-height: 1.15; }
 .page h2 { font-size: 1.1em; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
 .role { font-size: 1.26em; color: var(--accent); margin-top: 1mm; }
 .contact { display: flex; flex-wrap: wrap; gap: 0.5mm 4mm; margin-top: 2.5mm; color: #555; }
@@ -58,7 +58,7 @@
 .tpl-clean .col-main { padding: var(--my) var(--mx); }
 /* photo beside the name: stacking it above cost ~30mm of page height */
 .tpl-clean .hdr { gap: 6mm; padding-bottom: 3mm; border-bottom: 0.3mm solid #c9c9c9; }
-.tpl-clean h1 { font-weight: 400; letter-spacing: 0.03em; font-size: 2.5em; }
+.tpl-clean h1 { font-weight: 400; letter-spacing: 0.03em; font-size: calc(2.5em * var(--name-scale, 1)); }
 .tpl-clean .role { font-style: italic; }
 /* separators trail each item, so a wrapped line never starts with one */
 .tpl-clean .contact span:not(:last-child)::after { content: '·'; margin-left: 4mm; color: #aaa; }
@@ -66,9 +66,9 @@
 
 /* 2. Sidebar: sans, full-height accent column */
 .tpl-sidebar { font-family: 'Lato', Arial, sans-serif; }
-.tpl-sidebar .col-side { width: 64mm; flex: none; background: var(--accent); color: #fff; padding: var(--my) 7mm; }
+.tpl-sidebar .col-side { width: var(--side-w, 30.5%); flex: none; background: var(--accent); color: #fff; padding: var(--my) 7mm; }
 .tpl-sidebar .col-main { padding: var(--my) var(--mx) var(--my) 10mm; }
-.tpl-sidebar h1 { font-size: 2.7em; font-weight: 700; color: #1d1d1d; }
+.tpl-sidebar h1 { font-size: calc(2.7em * var(--name-scale, 1)); font-weight: 700; color: #1d1d1d; }
 .tpl-sidebar .col-main h2 { border-left: 1.2mm solid var(--accent); padding-left: 2.5mm; }
 .tpl-sidebar .col-side h2 { color: #fff; opacity: 0.85; border-bottom: 0.3mm solid rgba(255, 255, 255, 0.4); padding-bottom: 1mm; }
 .tpl-sidebar .col-side .photo { margin: 0 auto; border: 0.8mm solid rgba(255, 255, 255, 0.6); }
@@ -91,7 +91,7 @@
 }
 .tpl-banner .photo { border: 0.8mm solid rgba(255, 255, 255, 0.7); }
 .tpl-banner .role, .tpl-banner .hdr .contact { color: rgba(255, 255, 255, 0.88); }
-.tpl-banner h1 { font-size: 2.6em; letter-spacing: 0.02em; }
+.tpl-banner h1 { font-size: calc(2.6em * var(--name-scale, 1)); letter-spacing: 0.02em; }
 .tpl-banner h2 { display: inline-block; background: color-mix(in srgb, var(--accent) 12%, #fff); padding: 0.8mm 3mm; border-radius: 1mm; letter-spacing: 0.12em; }
 .tpl-banner .entry { display: grid; grid-template-columns: 30mm 1fr; column-gap: 5mm; }
 .tpl-banner .e-meta { float: none; text-align: left; margin: 0; }
@@ -100,7 +100,7 @@
 /* 4. Minimal: airy, light type, quiet grey headings */
 .tpl-minimal { font-family: 'Inter', Arial, sans-serif; color: #333; }
 .tpl-minimal .col-main { padding: calc(var(--my) + 4mm) calc(var(--mx) + 6mm); }
-.tpl-minimal h1 { font-weight: 300; font-size: 2.5em; letter-spacing: -0.01em; color: #111; }
+.tpl-minimal h1 { font-weight: 300; font-size: calc(2.5em * var(--name-scale, 1)); letter-spacing: -0.01em; color: #111; }
 .tpl-minimal .role { font-size: 1.1em; letter-spacing: 0.04em; }
 .tpl-minimal .contact { color: #777; gap: 0.5mm 5mm; margin-top: 3mm; }
 .tpl-minimal .extra { color: #777; }
@@ -116,12 +116,13 @@
 .tpl-duo .top .blk-header { padding-bottom: 0; }
 /* band bleeds edge to edge; negative bottom margin leaves exactly 6mm before column content */
 .tpl-duo .top .hdr { background: var(--band); padding: 9mm var(--mx); gap: 7mm; margin-bottom: calc(6mm - var(--my)); }
-.tpl-duo h1 { display: inline; font-size: 1.9em; font-weight: 600; color: #333; }
+.tpl-duo h1 { display: inline; font-size: calc(1.9em * var(--name-scale, 1)); font-weight: 600; color: #333; }
 .tpl-duo .role { display: inline; margin-left: 3mm; font-size: 1.1em; color: #555; }
 .tpl-duo .contact { gap: 0.5mm 0; margin-top: 2.5mm; color: #444; }
 .tpl-duo .contact span:not(:last-child)::after { content: '|'; margin: 0 2.5mm; color: #777; }
 .tpl-duo .extra { margin-top: 1.8mm; color: #444; }
-.tpl-duo .col-main, .tpl-duo .col-side { flex: 1; }
+.tpl-duo .col-main { flex: 1; }
+.tpl-duo .col-side { flex: 0 0 var(--side-w, 50%); }
 .tpl-duo .col-main { padding: var(--my) 4mm var(--my) var(--mx); }
 .tpl-duo .col-side { padding: var(--my) var(--mx) var(--my) 4mm; }
 .tpl-duo h2 { background: var(--band); text-align: center; text-transform: none; letter-spacing: 0.02em; color: #333; font-weight: 600; padding: 0.8mm 0; }

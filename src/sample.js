@@ -14,6 +14,10 @@ export const DEFAULT_STYLE = {
   photoSize: 30,
   photoShape: 'circle',
   pageNumbers: false,
+  pageFormat: 'A4', // or 'Letter'
+  font: '', // '' = the template's own font
+  nameScale: 1,
+  sideWidth: null, // % of page for the side column; null = the template's default
 };
 
 // Sample spacing tuned per template so the sample fills exactly one A4 page in each.
@@ -23,13 +27,14 @@ const tuned = (o) => ({ ...DEFAULT_STYLE, ...o });
 export const SAMPLE_STYLES = {
   clean: tuned({ fontSize: 9.25, lineHeight: 1.3, sectionGap: 4, entryGap: 2.25, marginX: 12, marginY: 10, photoSize: 26 }),
   minimal: tuned({ fontSize: 9.5, lineHeight: 1.3, sectionGap: 4, entryGap: 2.75, marginX: 12, marginY: 10, photoSize: 30 }),
-  sidebar: tuned({ fontSize: 9.75, lineHeight: 1.5, sectionGap: 3.5, entryGap: 4, marginX: 16, marginY: 14, photoSize: 30 }),
+  sidebar: tuned({ fontSize: 9.75, lineHeight: 1.5, sectionGap: 3.5, entryGap: 2.25, marginX: 16, marginY: 14, photoSize: 30 }),
   banner: tuned({ fontSize: 9, lineHeight: 1.3, sectionGap: 4, entryGap: 2, marginX: 12, marginY: 10, photoSize: 26 }),
   duo: tuned({ fontSize: 10.5, lineHeight: 1.5, sectionGap: 7, entryGap: 4, marginX: 16, marginY: 14, photoSize: 30 }),
 };
 
 // Which sample sections sit in the side column, where a template needs a different balance.
 export const SAMPLE_SIDE = {
+  sidebar: ['cert', 'skills', 'lang'],
   duo: ['edu', 'proj', 'cert', 'skills', 'lang'],
 };
 

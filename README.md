@@ -6,7 +6,10 @@ A small CV builder that runs entirely in the browser. Live: https://ajifri91.git
 - Inline sections (e.g. skills as "A | B | C"), extra header lines, optional page numbers
 - Rich text descriptions (bold, italic, underline, lists, links) and an optional photo
 - Live A4 preview that paginates automatically
-- Layout & spacing sliders (font size, line height, section/entry spacing, margins, bullet indent) to make content fit the pages you want
+- Layout & spacing sliders (font size, line height, section/entry spacing, margins, bullet indent, name size, side column width) to make content fit the pages you want
+- Hide entries or whole sections without deleting them, duplicate entries, force a section onto a new page
+- Section presets (Experience, Skills, Awards, …), font choice, A4 or US Letter
+- Save/load a JSON backup of your CV
 - Download PDF via the browser's print dialog ("Save as PDF"), so the PDF matches the preview
 - Sample CV is fictional; its photo is AI-generated and shows no real person
 - Everything is saved in your browser's localStorage; nothing is sent to a server

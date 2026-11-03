@@ -9,6 +9,14 @@ export function paginate(columns, capacity, firstPageOffset = 0) {
     let page = 0;
     let used = 0;
     blocks.forEach((b, i) => {
+      // manual page break: whatever follows starts a fresh page (unless this one is still empty)
+      if (b.kind === 'pagebreak') {
+        if (used > 0) {
+          page++;
+          used = 0;
+        }
+        return;
+      }
       const next = b.kind === 'heading' ? blocks[i + 1] : null;
       const need = b.height + (next ? next.height : 0);
       const cap = capacity[col] - (page === 0 ? firstPageOffset : 0);
