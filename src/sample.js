@@ -1,4 +1,6 @@
-import avatarSvg from './avatar.svg?raw';
+// AI-generated headshot (not a real person). Inlined as a data URL so a saved sample never
+// points at a hashed asset that a later deploy removes.
+import samplePhoto from './sample-photo.jpg?inline';
 
 // Spacing/size knobs. Units: pt for font, mm for gaps and margins.
 export const DEFAULT_STYLE = {
@@ -27,7 +29,7 @@ export const SAMPLE_STYLES = {
 
 const blank = { date: '', location: '', description: '' };
 
-// Fictional person and illustrated portrait, used on first load and by "Reset".
+// Fictional person with an AI-generated photo, used on first load and by "Reset".
 // Descriptions are legacy plain text; App normalises them to HTML on load.
 export const SAMPLE = {
   isSample: true,
@@ -35,7 +37,7 @@ export const SAMPLE = {
   accent: '#1f5f6b',
   style: SAMPLE_STYLES.clean,
   personal: {
-    photo: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(avatarSvg)}`,
+    photo: samplePhoto,
     name: 'Sara Lindholm',
     title: 'Senior Data Scientist',
     email: 'sara.lindholm@example.com',

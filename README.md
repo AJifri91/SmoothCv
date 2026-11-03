@@ -1,4 +1,4 @@
-# SmoothCv
+﻿# SmoothCv
 
 A small CV builder that runs entirely in the browser. Live: https://ajifri91.github.io/SmoothCv/
 
@@ -8,6 +8,7 @@ A small CV builder that runs entirely in the browser. Live: https://ajifri91.git
 - Live A4 preview that paginates automatically
 - Layout & spacing sliders (font size, line height, section/entry spacing, margins, bullet indent) to make content fit the pages you want
 - Download PDF via the browser's print dialog ("Save as PDF"), so the PDF matches the preview
+- Sample CV is fictional; its photo is AI-generated and shows no real person
 - Everything is saved in your browser's localStorage; nothing is sent to a server
 
 ## Develop
