@@ -32,7 +32,7 @@ function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY));
     if (d?.personal && Array.isArray(d.sections)) {
-      if (!untouchedSample(d)) return normalize(d);
+      if (!untouchedSample(d)) return switchTemplate(normalize(d), d.template);
       if (d.isSample && TEMPLATES[d.template]) template = d.template; // keep the template picked on the sample
     }
   } catch {}
@@ -44,6 +44,25 @@ const sampleFor = (template) => {
   const side = SAMPLE_SIDE[template];
   const sections = side ? SAMPLE.sections.map((s) => ({ ...s, side: side.includes(s.id) })) : SAMPLE.sections;
   return normalize({ ...SAMPLE, template, sections, style: SAMPLE_STYLES[template] ?? DEFAULT_STYLE });
+};
+
+// Spacing still equal to some template's tuned values follows the template, so an edited sample keeps
+// filling the page after a switch (also run on load for CVs switched before this). Spacing the user changed stays.
+const TUNED_KEYS = ['fontSize', 'lineHeight', 'sectionGap', 'entryGap', 'marginX', 'marginY', 'photoSize'];
+const switchTemplate = (d, template) => {
+  const to = SAMPLE_STYLES[template];
+  const tuned = Object.values(SAMPLE_STYLES).some((s) => TUNED_KEYS.every((k) => d.style[k] === s[k]));
+  if (to && tuned) {
+    for (const k of TUNED_KEYS) d.style[k] = to[k];
+    // sample sections also take that template's column split, which the tuning assumed
+    const side = SAMPLE_SIDE[template];
+    for (const s of d.sections) {
+      const orig = SAMPLE.sections.find((o) => o.id === s.id);
+      if (orig) s.side = side ? side.includes(s.id) : orig.side;
+    }
+  }
+  d.template = template;
+  return d;
 };
 
 const SWATCHES =['#1f5f6b', '#2f4f9e', '#6d4bc2', '#b03a6a', '#c0562d', '#2f7d55', '#2b2b2b'];
@@ -293,7 +312,7 @@ export default function App() {
               role="radio"
               aria-checked={data.template === t.id}
               className={data.template === t.id ? 'on' : ''}
-              onClick={() => (data.isSample ? setData(sampleFor(t.id)) : edit((d) => (d.template = t.id)))}
+              onClick={() => (data.isSample ? setData(sampleFor(t.id)) : edit((d) => switchTemplate(d, t.id)))}
             >
               {t.name}
             </button>
