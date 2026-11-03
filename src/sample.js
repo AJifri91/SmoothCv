@@ -9,6 +9,7 @@ export const DEFAULT_STYLE = {
   indent: 4.5,
   photoSize: 30,
   photoShape: 'circle',
+  pageNumbers: false,
 };
 
 // Fictional sample CV, used on first load and by "Reset".
@@ -25,6 +26,7 @@ export const SAMPLE = {
     phone: '+1 555 0142',
     location: 'Portland, OR',
     website: 'jordanavery.example',
+    extra: 'Open to relocation',
     summary:
       'Product designer with 9 years of experience turning messy workflows into calm, usable tools. I work closely with engineering, run lightweight research, and care about accessibility and design systems that teams actually adopt.',
   },

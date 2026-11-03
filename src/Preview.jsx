@@ -13,7 +13,7 @@ function Blk({ b }) {
 }
 
 export default function Preview({ data }) {
-  const { tpl, cols } = buildBlocks(data);
+  const { tpl, cols, top } = buildBlocks(data);
   const byKey = Object.fromEntries(Object.values(cols).flat().map((b) => [b.key, b]));
   const [pages, setPages] = useState(null);
   const [scale, setScale] = useState(1);
@@ -34,13 +34,22 @@ export default function Preview({ data }) {
     '--indent': `${st.indent}mm`,
     '--photo': `${st.photoSize}mm`,
   };
-  const page = (fill, extra = '', ref = undefined) => (
+  // withTop: render the full-width header band (page 1 only); pnum: "n/total" footer text
+  const page = (fill, { extra = '', ref, withTop = false, pnum } = {}) => (
     <div ref={ref} className={`page tpl-${tpl.id} photo-${st.photoShape} ${extra}`} style={vars}>
-      {tpl.cols.map((c) => (
-        <div key={c} className={`col col-${c}`} data-col={c}>
-          {fill(c)}
+      {withTop && top.length > 0 && (
+        <div className="top" data-top>
+          {top.map((b) => <Blk key={b.key} b={b} />)}
         </div>
-      ))}
+      )}
+      <div className="cols">
+        {tpl.cols.map((c) => (
+          <div key={c} className={`col col-${c}`} data-col={c}>
+            {fill(c)}
+          </div>
+        ))}
+      </div>
+      {pnum && <div className="pnum">{pnum}</div>}
     </div>
   );
 
@@ -61,7 +70,8 @@ export default function Preview({ data }) {
       const measured = Object.fromEntries(
         Object.entries(cols).map(([c, list]) => [c, list.map((b) => ({ key: b.key, kind: b.kind, height: heights[b.key] }))]),
       );
-      setPages(paginate(measured, capacity));
+      const topEl = measureRef.current.querySelector('[data-top]');
+      setPages(paginate(measured, capacity, topEl ? topEl.getBoundingClientRect().height : 0));
     };
     run();
     document.fonts?.ready.then(run); // re-pack once web/system fonts settle
@@ -81,8 +91,8 @@ export default function Preview({ data }) {
   return (
     <div className="preview" ref={paneRef}>
       <div className="measure" aria-hidden="true">
-        {page((c) => cols[c].map((b) => <Blk key={b.key} b={b} />), 'measuring', measureRef)}
-        {page(() => null, '', probeRef)}
+        {page((c) => cols[c].map((b) => <Blk key={b.key} b={b} />), { extra: 'measuring', ref: measureRef, withTop: true })}
+        {page(() => null, { ref: probeRef })}
       </div>
       <div className="page-count" role="status">
         {shown.length} page{shown.length > 1 ? 's' : ''}
@@ -90,7 +100,10 @@ export default function Preview({ data }) {
       <div className="pages" style={{ '--s': scale }}>
         {shown.map((pg, i) => (
           <div className="page-box" key={i}>
-            {page((c) => (pg[c] ?? []).map((k) => byKey[k]).filter(Boolean).map((b) => <Blk key={b.key} b={b} />))}
+            {page((c) => (pg[c] ?? []).map((k) => byKey[k]).filter(Boolean).map((b) => <Blk key={b.key} b={b} />), {
+              withTop: i === 0,
+              pnum: st.pageNumbers ? `${i + 1}/${shown.length}` : undefined,
+            })}
           </div>
         ))}
       </div>

@@ -224,7 +224,11 @@ export default function App() {
             <Slider label="Bullet indent" unit="mm" min={2} max={12} step={0.5} value={st.indent} onChange={setS('indent')} />
             <Slider label="Photo size" unit="mm" min={15} max={50} step={1} value={st.photoSize} onChange={setS('photoSize')} />
           </div>
-          <button type="button" className="add" onClick={() => edit((d) => (d.style = { ...DEFAULT_STYLE, photoShape: d.style.photoShape }))}>
+          <label className="check">
+            <input type="checkbox" checked={!!st.pageNumbers} onChange={(e) => setS('pageNumbers')(e.target.checked)} />
+            Page numbers
+          </label>
+          <button type="button" className="add" onClick={() => edit((d) => (d.style = { ...DEFAULT_STYLE, photoShape: d.style.photoShape, pageNumbers: d.style.pageNumbers }))}>
             Reset spacing
           </button>
         </details>
@@ -254,6 +258,7 @@ export default function App() {
             <Field label="Location" value={p.location} onChange={setP('location')} />
             <Field label="Website" value={p.website} onChange={setP('website')} />
           </div>
+          <Field label="Extra header lines (one per line, e.g. languages, relocation)" value={p.extra} onChange={setP('extra')} multiline />
           <RichText label="Profile summary" value={p.summary} onChange={setP('summary')} />
         </details>
 
@@ -270,10 +275,16 @@ export default function App() {
             </summary>
             <div className="grid2">
               <Field label="Section title" value={s.title} onChange={(v) => edit((d) => (d.sections[si].title = v))} />
-              <label className="check">
-                <input type="checkbox" checked={!!s.side} onChange={(e) => edit((d) => (d.sections[si].side = e.target.checked))} />
-                Put in sidebar (Sidebar template)
-              </label>
+              <div>
+                <label className="check">
+                  <input type="checkbox" checked={!!s.side} onChange={(e) => edit((d) => (d.sections[si].side = e.target.checked))} />
+                  Side column (Sidebar, Duo)
+                </label>
+                <label className="check tight">
+                  <input type="checkbox" checked={!!s.inline} onChange={(e) => edit((d) => (d.sections[si].inline = e.target.checked))} />
+                  Show entries inline (A | B | C)
+                </label>
+              </div>
             </div>
             {s.entries.map((e, ei) => {
               const setE = (k) => (v) => edit((d) => (d.sections[si].entries[ei][k] = v));

@@ -2,7 +2,8 @@
 
 A small CV builder that runs entirely in the browser. Live: https://ajifri91.github.io/SmoothCv/
 
-- Three templates: Clean, Sidebar, Banner
+- Five templates: Clean, Minimal, Sidebar, Banner, Duo (header band + two columns)
+- Inline sections (e.g. skills as "A | B | C"), extra header lines, optional page numbers
 - Rich text descriptions (bold, italic, underline, lists, links) and an optional photo
 - Live A4 preview that paginates automatically
 - Layout & spacing sliders (font size, line height, section/entry spacing, margins, bullet indent) to make content fit the pages you want

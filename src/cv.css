@@ -5,6 +5,8 @@
   height: 297mm;
   overflow: hidden;
   display: flex;
+  flex-direction: column; /* optional full-width band, then the columns row */
+  position: relative;
   background: #fff;
   color: #262626;
   font-size: var(--fs);
@@ -12,7 +14,11 @@
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
-.page.measuring { height: auto; align-items: flex-start; }
+.page.measuring { height: auto; }
+.cols { display: flex; flex: 1; min-height: 0; }
+.page.measuring .cols { align-items: flex-start; }
+.top { flex: none; }
+.pnum { position: absolute; right: var(--mx); bottom: calc(var(--my) / 2); transform: translateY(50%); font-size: 0.85em; color: #888; }
 .col { min-width: 0; }
 .col-main { flex: 1; }
 .blk { display: flow-root; }
@@ -24,6 +30,9 @@
 .page h2 { font-size: 1.1em; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
 .role { font-size: 1.26em; color: var(--accent); margin-top: 1mm; }
 .contact { display: flex; flex-wrap: wrap; gap: 0.5mm 4mm; margin-top: 2.5mm; color: #555; }
+.extra { margin-top: 1mm; color: #555; }
+.inline-list { display: flex; flex-wrap: wrap; row-gap: 1mm; }
+.inline-list > span:not(:last-child)::after { content: '|'; margin: 0 2.5mm; color: #999; }
 .desc { margin-top: 1mm; }
 .desc > * + * { margin-top: 1mm; }
 .desc ul, .desc ol { padding-left: var(--indent); }
@@ -85,3 +94,42 @@
 .tpl-banner .entry { display: grid; grid-template-columns: 30mm 1fr; column-gap: 5mm; }
 .tpl-banner .e-meta { float: none; text-align: left; margin: 0; }
 .tpl-banner .e-date { font-weight: 700; color: var(--accent); }
+
+/* 4. Minimal: airy, light type, quiet grey headings */
+.tpl-minimal { font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif; color: #333; }
+.tpl-minimal .col-main { padding: calc(var(--my) + 4mm) calc(var(--mx) + 6mm); }
+.tpl-minimal h1 { font-weight: 300; font-size: 2.5em; letter-spacing: -0.01em; color: #111; }
+.tpl-minimal .role { font-size: 1.1em; letter-spacing: 0.04em; }
+.tpl-minimal .contact { color: #777; gap: 0.5mm 5mm; margin-top: 3mm; }
+.tpl-minimal .extra { color: #777; }
+.tpl-minimal .blk-header { padding-bottom: calc(var(--section-gap) * 1.5); }
+.tpl-minimal .blk-heading { padding-bottom: 2.5mm; }
+.tpl-minimal h2 { font-size: 0.8em; letter-spacing: 0.25em; color: #9a9a9a; font-weight: 600; }
+.tpl-minimal .e-title { font-weight: 600; color: #111; }
+.tpl-minimal .e-sub { color: #777; }
+.tpl-minimal .e-meta { color: #999; }
+
+/* 5. Duo: tinted header band across the top, two equal columns, bar headings */
+.tpl-duo { font-family: 'Segoe UI', Roboto, Arial, sans-serif; --band: color-mix(in srgb, var(--accent) 7%, #e8e8e8); }
+.tpl-duo .top .blk-header { padding-bottom: 0; }
+/* band bleeds edge to edge; negative bottom margin leaves exactly 6mm before column content */
+.tpl-duo .top .hdr { background: var(--band); padding: 9mm var(--mx); gap: 7mm; margin-bottom: calc(6mm - var(--my)); }
+.tpl-duo h1 { display: inline; font-size: 1.9em; font-weight: 600; color: #333; }
+.tpl-duo .role { display: inline; margin-left: 3mm; font-size: 1.1em; color: #555; }
+.tpl-duo .contact { gap: 0.5mm 0; margin-top: 2.5mm; color: #444; }
+.tpl-duo .contact span + span::before { content: '|'; margin: 0 2.5mm; color: #777; }
+.tpl-duo .extra { margin-top: 1.8mm; color: #444; }
+.tpl-duo .col-main, .tpl-duo .col-side { flex: 1; }
+.tpl-duo .col-main { padding: var(--my) 4mm var(--my) var(--mx); }
+.tpl-duo .col-side { padding: var(--my) var(--mx) var(--my) 4mm; }
+.tpl-duo h2 { background: var(--band); text-align: center; text-transform: none; letter-spacing: 0.02em; color: #333; font-weight: 600; padding: 0.8mm 0; }
+.tpl-duo .entry { display: flex; flex-wrap: wrap; }
+.tpl-duo .e-body { display: contents; }
+.tpl-duo .e-sub { order: 1; color: inherit; font-weight: 700; }
+.tpl-duo .e-sub::before { content: ' | '; white-space: pre; }
+.tpl-duo .e-meta { order: 2; flex-basis: 100%; float: none; text-align: left; margin: 0; color: #444; font-size: 1em; }
+.tpl-duo .e-meta span { display: inline; }
+.tpl-duo .e-date:not(:empty) + .e-loc::before { content: ' | '; white-space: pre; }
+.tpl-duo .desc { order: 3; flex-basis: 100%; }
+.tpl-duo .inline-list .e-sub { font-weight: 400; }
+.tpl-duo .inline-list .e-sub::before { content: none; }

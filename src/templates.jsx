@@ -1,10 +1,13 @@
 // Template definitions + turning CV data into measurable blocks per column.
 import { sanitize, isBlank } from './richtext.js';
 
+// cols: paginated columns, left to right. topHeader: header is a full-width band on page 1.
 export const TEMPLATES = {
   clean: { id: 'clean', name: 'Clean', cols: ['main'] },
+  minimal: { id: 'minimal', name: 'Minimal', cols: ['main'] },
   sidebar: { id: 'sidebar', name: 'Sidebar', cols: ['side', 'main'] },
   banner: { id: 'banner', name: 'Banner', cols: ['main'] },
+  duo: { id: 'duo', name: 'Duo', cols: ['main', 'side'], topHeader: true },
 };
 
 export function Desc({ html }) {
@@ -18,7 +21,13 @@ function Photo({ p }) {
 
 function Contact({ p }) {
   const items = [p.email, p.phone, p.location, p.website].filter(Boolean);
-  return <div className="contact">{items.map((t, i) => <span key={i}>{t}</span>)}</div>;
+  const extra = (p.extra ?? '').split('\n').filter((l) => l.trim());
+  return (
+    <>
+      <div className="contact">{items.map((t, i) => <span key={i}>{t}</span>)}</div>
+      {extra.map((l, i) => <div className="extra" key={i}>{l}</div>)}
+    </>
+  );
 }
 
 function Entry({ e }) {
@@ -37,10 +46,25 @@ function Entry({ e }) {
   );
 }
 
-// Returns { tpl, cols: { [col]: [{ key, kind, last, node }] } }
+// All entries on one wrapping line, e.g. "Python | SQL | Docker".
+function Inline({ entries }) {
+  return (
+    <div className="inline-list">
+      {entries.filter((e) => e.title).map((e) => (
+        <span key={e.id}>
+          {e.title}
+          {e.subtitle && <span className="e-sub"> ({e.subtitle})</span>}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// Returns { tpl, top: [block], cols: { [col]: [{ key, kind, last, node }] } }
 export function buildBlocks(data) {
   const tpl = TEMPLATES[data.template] ?? TEMPLATES.clean;
   const p = data.personal;
+  const top = [];
   const cols = Object.fromEntries(tpl.cols.map((c) => [c, []]));
   const add = (col, key, kind, node, last = false) => cols[col].push({ key, kind, node, last });
   const heading = (col, key, text) => add(col, key, 'heading', <h2>{text}</h2>);
@@ -51,24 +75,24 @@ export function buildBlocks(data) {
       {p.title && <div className="role">{p.title}</div>}
     </>
   );
-  if (tpl.id === 'sidebar') {
+  const header = (
+    <div className="hdr">
+      <Photo p={p} />
+      <div className="hdr-text">
+        {title}
+        <Contact p={p} />
+      </div>
+    </div>
+  );
+  if (tpl.topHeader) {
+    top.push({ key: 'header', kind: 'header', node: header });
+  } else if (tpl.id === 'sidebar') {
     add('main', 'header', 'header', <div className="hdr"><div className="hdr-text">{title}</div></div>);
     if (p.photo) add('side', 'photo', 'header', <Photo p={p} />);
     heading('side', 'contact-h', 'Contact');
     add('side', 'contact', 'entry', <Contact p={p} />, true);
   } else {
-    add(
-      'main',
-      'header',
-      'header',
-      <div className="hdr">
-        <Photo p={p} />
-        <div className="hdr-text">
-          {title}
-          <Contact p={p} />
-        </div>
-      </div>,
-    );
+    add('main', 'header', 'header', header);
   }
 
   if (!isBlank(p.summary)) {
@@ -80,7 +104,8 @@ export function buildBlocks(data) {
     if (!s.entries.length) continue;
     const col = s.side && cols.side ? 'side' : 'main';
     heading(col, `${s.id}-h`, s.title);
-    s.entries.forEach((e, i) => add(col, `${s.id}-${e.id}`, 'entry', <Entry e={e} />, i === s.entries.length - 1));
+    if (s.inline) add(col, `${s.id}-inline`, 'entry', <Inline entries={s.entries} />, true);
+    else s.entries.forEach((e, i) => add(col, `${s.id}-${e.id}`, 'entry', <Entry e={e} />, i === s.entries.length - 1));
   }
-  return { tpl, cols };
+  return { tpl, top, cols };
 }

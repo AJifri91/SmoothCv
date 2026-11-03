@@ -59,7 +59,8 @@ summary::marker { color: var(--muted); }
 }
 .field textarea { resize: vertical; }
 .field input:focus, .field textarea:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
-.check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); margin-top: 24px; }
+.check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); margin-top: 14px; }
+.check.tight { margin-top: 4px; }
 .add { margin-top: 10px; background: none; border: 1px dashed var(--line); border-radius: 8px; padding: 8px; color: var(--brand); width: 100%; }
 .add.big { background: var(--panel); padding: 12px; }
 

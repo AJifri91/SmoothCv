@@ -27,6 +27,11 @@ test('columns paginate independently', () => {
   assert.deepEqual(pages, [{ side: ['s1'], main: ['m1'] }, { main: ['m2'] }]);
 });
 
+test('first-page offset only shrinks page 1', () => {
+  const pages = paginate({ main: [b('a', 50), b('b', 50), b('c', 90), b('d', 10)] }, { main: 100 }, 40);
+  assert.deepEqual(pages, [{ main: ['a'] }, { main: ['b'] }, { main: ['c', 'd'] }]);
+});
+
 test('empty input yields one blank page', () => {
   assert.deepEqual(paginate({ main: [] }, { main: 100 }), [{}]);
 });
