@@ -20,13 +20,20 @@ function normalize(d) {
   return d;
 }
 
+// An untouched sample is swapped for the current one, so sample updates reach returning visitors.
+// Saves from before the isSample flag count as untouched while they still carry the sample identity.
+const untouchedSample = (d) =>
+  d.isSample ?? (d.personal.name === 'Jordan Avery' && d.personal.email === 'jordan.avery@example.com');
+
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY));
-    if (d?.personal && Array.isArray(d.sections)) return normalize(d);
+    if (d?.personal && Array.isArray(d.sections) && !untouchedSample(d)) return normalize(d);
   } catch {}
   return normalize(SAMPLE);
 }
+
+const SWATCHES = ['#1f5f6b', '#2f4f9e', '#6d4bc2', '#b03a6a', '#c0562d', '#2f7d55', '#2b2b2b'];
 
 // Downscale to keep localStorage (≈5 MB) comfortable: max 600px JPEG.
 function readPhoto(file) {
@@ -165,6 +172,7 @@ export default function App() {
     setData((d) => {
       const n = structuredClone(d);
       fn(n);
+      n.isSample = false;
       return n;
     });
 
@@ -215,9 +223,27 @@ export default function App() {
             </button>
           ))}
         </div>
-        <label className="accent">
-          Accent <input type="color" value={data.accent} onChange={(e) => edit((d) => (d.accent = e.target.value))} />
-        </label>
+        <div className="swatches" role="radiogroup" aria-label="Accent colour">
+          {SWATCHES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="radio"
+              aria-checked={data.accent === c}
+              aria-label={`Accent ${c}`}
+              className="sw"
+              style={{ '--c': c }}
+              onClick={() => edit((d) => (d.accent = c))}
+            />
+          ))}
+          <label
+            className={`sw custom${SWATCHES.includes(data.accent) ? '' : ' on'}`}
+            style={SWATCHES.includes(data.accent) ? undefined : { '--c': data.accent }}
+            title="Custom colour"
+          >
+            <input type="color" aria-label="Custom accent colour" value={data.accent} onChange={(e) => edit((d) => (d.accent = e.target.value))} />
+          </label>
+        </div>
         <span className="spacer" />
         <button
           type="button"
