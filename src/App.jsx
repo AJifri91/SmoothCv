@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Preview from './Preview.jsx';
 import ColorPicker from './ColorPicker.jsx';
 import { TEMPLATES } from './templates.jsx';
-import { SAMPLE, DEFAULT_STYLE } from './sample.js';
+import { SAMPLE, SAMPLE_STYLES, DEFAULT_STYLE } from './sample.js';
 import { textToHtml, sanitize } from './richtext.js';
 
 const KEY = 'smoothcv:v1';
@@ -34,7 +34,10 @@ function load() {
   return normalize(SAMPLE);
 }
 
-const SWATCHES = ['#1f5f6b', '#2f4f9e', '#6d4bc2', '#b03a6a', '#c0562d', '#2f7d55', '#2b2b2b'];
+// The untouched sample carries spacing tuned so it fills one page in each template.
+const sampleFor = (template) => normalize({ ...SAMPLE, template, style: SAMPLE_STYLES[template] ?? DEFAULT_STYLE });
+
+const SWATCHES =['#1f5f6b', '#2f4f9e', '#6d4bc2', '#b03a6a', '#c0562d', '#2f7d55', '#2b2b2b'];
 
 // Downscale to keep localStorage (≈5 MB) comfortable: max 600px JPEG.
 function readPhoto(file) {
@@ -218,7 +221,7 @@ export default function App() {
               role="radio"
               aria-checked={data.template === t.id}
               className={data.template === t.id ? 'on' : ''}
-              onClick={() => edit((d) => (d.template = t.id))}
+              onClick={() => (data.isSample ? setData(sampleFor(t.id)) : edit((d) => (d.template = t.id)))}
             >
               {t.name}
             </button>
@@ -243,7 +246,7 @@ export default function App() {
         <button
           type="button"
           className="ghost"
-          onClick={() => confirm('Replace your CV with the sample? This cannot be undone.') && setData(normalize(SAMPLE))}
+          onClick={() => confirm('Replace your CV with the sample? This cannot be undone.') && setData(sampleFor(data.template))}
         >
           Reset
         </button>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Illustrated, fictional portrait used by the sample CV -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8edf2"/>
+      <stop offset="1" stop-color="#cfd8e1"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3328"/>
+      <stop offset="1" stop-color="#2e1f19"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- hair behind the head, shoulder length -->
+  <path d="M116 176 C104 92 166 50 206 52 C258 54 300 98 290 180 C286 236 304 292 296 336 L104 336 C96 292 114 236 116 176Z" fill="url(#hair)"/>
+  <!-- neck -->
+  <path d="M176 236 L224 236 L228 296 L172 296Z" fill="#dda688"/>
+  <!-- blazer -->
+  <path d="M52 400 C58 334 106 304 158 294 L242 294 C294 304 342 334 348 400Z" fill="#26344d"/>
+  <!-- blouse -->
+  <path d="M166 294 L200 358 L234 294Z" fill="#f6f3ee"/>
+  <!-- lapels -->
+  <path d="M158 294 L200 358 L182 400 L136 400 C148 360 148 322 158 294Z" fill="#1c2739"/>
+  <path d="M242 294 L200 358 L218 400 L264 400 C252 360 252 322 242 294Z" fill="#1c2739"/>
+  <!-- ears + earrings -->
+  <ellipse cx="146" cy="182" rx="9" ry="14" fill="#e9b594"/>
+  <ellipse cx="254" cy="182" rx="9" ry="14" fill="#e9b594"/>
+  <circle cx="147" cy="200" r="3.6" fill="#e3bd62"/>
+  <circle cx="253" cy="200" r="3.6" fill="#e3bd62"/>
+  <!-- face -->
+  <ellipse cx="200" cy="176" rx="55" ry="69" fill="#f2c6a7"/>
+  <!-- side-parted fringe -->
+  <path d="M143 172 C134 112 168 90 206 92 C244 94 266 120 258 176 C252 146 238 126 216 118 C196 138 170 148 143 172Z" fill="url(#hair)"/>
+  <!-- brows -->
+  <path d="M167 157 Q179 150 192 155" fill="none" stroke="#3a2820" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M208 155 Q221 150 233 157" fill="none" stroke="#3a2820" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- eyes -->
+  <ellipse cx="180" cy="172" rx="5.2" ry="6.2" fill="#2b211d"/>
+  <ellipse cx="220" cy="172" rx="5.2" ry="6.2" fill="#2b211d"/>
+  <circle cx="181.8" cy="170" r="1.6" fill="#fff"/>
+  <circle cx="221.8" cy="170" r="1.6" fill="#fff"/>
+  <path d="M172 166 Q180 161 188 165" fill="none" stroke="#2b211d" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M212 165 Q220 161 228 166" fill="none" stroke="#2b211d" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- blush, nose, smile -->
+  <circle cx="168" cy="198" r="10" fill="#ef9f98" opacity="0.35"/>
+  <circle cx="232" cy="198" r="10" fill="#ef9f98" opacity="0.35"/>
+  <path d="M200 180 Q195 197 203 201" fill="none" stroke="#d29878" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M183 214 Q200 228 217 214 Q200 221 183 214Z" fill="#c4626a"/>
+</svg>
