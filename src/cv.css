@@ -40,6 +40,7 @@
 .desc li + li { margin-top: 0.4mm; }
 .desc a { color: inherit; }
 .e-title { font-weight: 700; }
+.e-head { display: none; }
 .e-sub { color: #555; }
 .e-sub:empty, .e-date:empty, .e-loc:empty { display: none; }
 .e-meta { float: right; text-align: right; margin-left: 4mm; color: #666; font-size: 0.93em; }
@@ -53,18 +54,18 @@
 .hdr-text { flex: 1; min-width: 0; }
 
 /* 1. Clean: serif, centred header, ruled headings */
-.tpl-clean { font-family: Georgia, 'Times New Roman', serif; }
+.tpl-clean { font-family: 'Source Serif 4', Georgia, serif; }
 .tpl-clean .col-main { padding: var(--my) var(--mx); }
-.tpl-clean .hdr { flex-direction: column; gap: 3mm; text-align: center; }
-.tpl-clean .hdr-text { width: 100%; }
+/* photo beside the name: stacking it above cost ~30mm of page height */
+.tpl-clean .hdr { gap: 6mm; padding-bottom: 3mm; border-bottom: 0.3mm solid #c9c9c9; }
 .tpl-clean h1 { font-weight: 400; letter-spacing: 0.03em; font-size: 2.5em; }
 .tpl-clean .role { font-style: italic; }
-.tpl-clean .contact { justify-content: center; }
-.tpl-clean .contact span + span::before { content: '·'; margin-right: 4mm; color: #aaa; }
+/* separators trail each item, so a wrapped line never starts with one */
+.tpl-clean .contact span:not(:last-child)::after { content: '·'; margin-left: 4mm; color: #aaa; }
 .tpl-clean h2 { border-bottom: 0.3mm solid #c9c9c9; padding-bottom: 1mm; font-weight: 400; letter-spacing: 0.16em; }
 
 /* 2. Sidebar: sans, full-height accent column */
-.tpl-sidebar { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+.tpl-sidebar { font-family: 'Lato', Arial, sans-serif; }
 .tpl-sidebar .col-side { width: 64mm; flex: none; background: var(--accent); color: #fff; padding: var(--my) 7mm; }
 .tpl-sidebar .col-main { padding: var(--my) var(--mx) var(--my) 10mm; }
 .tpl-sidebar h1 { font-size: 2.7em; font-weight: 700; color: #1d1d1d; }
@@ -78,7 +79,7 @@
 .tpl-sidebar .col-side .blk.last { padding-bottom: var(--section-gap); }
 
 /* 3. Banner: accent band on page 1, dates in a left rail */
-.tpl-banner { font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; }
+.tpl-banner { font-family: 'Nunito Sans', Arial, sans-serif; }
 .tpl-banner .col-main { padding: var(--my) var(--mx); }
 /* negative margins bleed the band into the page padding; flow-root keeps the measured height honest */
 .tpl-banner .hdr {
@@ -97,7 +98,7 @@
 .tpl-banner .e-date { font-weight: 700; color: var(--accent); }
 
 /* 4. Minimal: airy, light type, quiet grey headings */
-.tpl-minimal { font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif; color: #333; }
+.tpl-minimal { font-family: 'Inter', Arial, sans-serif; color: #333; }
 .tpl-minimal .col-main { padding: calc(var(--my) + 4mm) calc(var(--mx) + 6mm); }
 .tpl-minimal h1 { font-weight: 300; font-size: 2.5em; letter-spacing: -0.01em; color: #111; }
 .tpl-minimal .role { font-size: 1.1em; letter-spacing: 0.04em; }
@@ -111,14 +112,14 @@
 .tpl-minimal .e-meta { color: #999; }
 
 /* 5. Duo: tinted header band across the top, two equal columns, bar headings */
-.tpl-duo { font-family: 'Segoe UI', Roboto, Arial, sans-serif; --band: color-mix(in srgb, var(--accent) 7%, #e8e8e8); }
+.tpl-duo { font-family: 'Rubik', Arial, sans-serif; --band: color-mix(in srgb, var(--accent) 7%, #e8e8e8); }
 .tpl-duo .top .blk-header { padding-bottom: 0; }
 /* band bleeds edge to edge; negative bottom margin leaves exactly 6mm before column content */
 .tpl-duo .top .hdr { background: var(--band); padding: 9mm var(--mx); gap: 7mm; margin-bottom: calc(6mm - var(--my)); }
 .tpl-duo h1 { display: inline; font-size: 1.9em; font-weight: 600; color: #333; }
 .tpl-duo .role { display: inline; margin-left: 3mm; font-size: 1.1em; color: #555; }
 .tpl-duo .contact { gap: 0.5mm 0; margin-top: 2.5mm; color: #444; }
-.tpl-duo .contact span + span::before { content: '|'; margin: 0 2.5mm; color: #777; }
+.tpl-duo .contact span:not(:last-child)::after { content: '|'; margin: 0 2.5mm; color: #777; }
 .tpl-duo .extra { margin-top: 1.8mm; color: #444; }
 .tpl-duo .col-main, .tpl-duo .col-side { flex: 1; }
 .tpl-duo .col-main { padding: var(--my) 4mm var(--my) var(--mx); }
@@ -126,10 +127,11 @@
 .tpl-duo h2 { background: var(--band); text-align: center; text-transform: none; letter-spacing: 0.02em; color: #333; font-weight: 600; padding: 0.8mm 0; }
 .tpl-duo .entry { display: flex; flex-wrap: wrap; }
 .tpl-duo .e-body { display: contents; }
-.tpl-duo .e-sub { order: 1; color: inherit; font-weight: 700; }
-.tpl-duo .e-sub::before { content: ' | '; white-space: pre; }
+.tpl-duo .e-head { display: block; order: 0; flex-basis: 100%; font-weight: 700; }
+.tpl-duo .entry .e-title, .tpl-duo .entry .e-sub { display: none; }
 .tpl-duo .e-meta { order: 2; flex-basis: 100%; float: none; text-align: left; margin: 0; color: #444; font-size: 1em; }
 .tpl-duo .e-meta span { display: inline; }
+.tpl-duo .e-meta span:empty { display: none; }
 .tpl-duo .e-date:not(:empty) + .e-loc::before { content: ' | '; white-space: pre; }
 .tpl-duo .desc { order: 3; flex-basis: 100%; }
 .tpl-duo .inline-list .e-sub { font-weight: 400; }

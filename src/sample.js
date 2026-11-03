@@ -17,14 +17,20 @@ export const DEFAULT_STYLE = {
 };
 
 // Sample spacing tuned per template so the sample fills exactly one A4 page in each.
-// Found by shrinking margins/line height (font kept >= 9pt) until it fit, then widening gaps until full.
+// Found by shrinking font/line height/margins (font kept >= 9pt) until it fit, then widening gaps.
+// Capped at 96% full so small rendering differences between devices never push it to a 2nd page.
 const tuned = (o) => ({ ...DEFAULT_STYLE, ...o });
 export const SAMPLE_STYLES = {
-  clean: tuned({ fontSize: 9, lineHeight: 1.3, sectionGap: 3.5, entryGap: 2.25, marginX: 12, marginY: 10, photoSize: 26 }),
-  minimal: tuned({ fontSize: 9.5, lineHeight: 1.4, sectionGap: 3.5, entryGap: 2, marginX: 16, marginY: 10, photoSize: 30 }),
-  sidebar: tuned({ fontSize: 10.25, lineHeight: 1.45, sectionGap: 4.5, entryGap: 2.25, marginX: 16, marginY: 14, photoSize: 30 }),
-  banner: tuned({ fontSize: 9.5, lineHeight: 1.3, sectionGap: 3.5, entryGap: 2, marginX: 12, marginY: 10, photoSize: 30 }),
-  duo: tuned({ fontSize: 10, lineHeight: 1.45, sectionGap: 3.5, entryGap: 2.25, marginX: 16, marginY: 14, photoSize: 30 }),
+  clean: tuned({ fontSize: 9.25, lineHeight: 1.3, sectionGap: 4, entryGap: 2.25, marginX: 12, marginY: 10, photoSize: 26 }),
+  minimal: tuned({ fontSize: 9.5, lineHeight: 1.3, sectionGap: 4, entryGap: 2.75, marginX: 12, marginY: 10, photoSize: 30 }),
+  sidebar: tuned({ fontSize: 9.75, lineHeight: 1.5, sectionGap: 3.5, entryGap: 4, marginX: 16, marginY: 14, photoSize: 30 }),
+  banner: tuned({ fontSize: 9, lineHeight: 1.3, sectionGap: 4, entryGap: 2, marginX: 12, marginY: 10, photoSize: 26 }),
+  duo: tuned({ fontSize: 10.5, lineHeight: 1.5, sectionGap: 7, entryGap: 4, marginX: 16, marginY: 14, photoSize: 30 }),
+};
+
+// Which sample sections sit in the side column, where a template needs a different balance.
+export const SAMPLE_SIDE = {
+  duo: ['edu', 'proj', 'cert', 'skills', 'lang'],
 };
 
 const blank = { date: '', location: '', description: '' };

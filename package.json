@@ -11,6 +11,11 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/lato": "^5.3.0",
+    "@fontsource/nunito-sans": "^5.3.0",
+    "@fontsource/rubik": "^5.3.0",
+    "@fontsource/source-serif-4": "^5.3.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

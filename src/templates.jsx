@@ -48,6 +48,11 @@ function Entry({ e }) {
         <span className="e-loc">{e.location}</span>
       </div>
       <div className="e-body">
+        {/* one wrapping line "Title | Subtitle", shown only by templates that want it (Duo) */}
+        <div className="e-head">
+          <b>{e.title}</b>
+          {e.subtitle && ` | ${e.subtitle}`}
+        </div>
         <div className="e-title">{e.title}</div>
         <div className="e-sub">{e.subtitle}</div>
         <Desc html={e.description} />

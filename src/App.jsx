@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Preview from './Preview.jsx';
 import ColorPicker from './ColorPicker.jsx';
 import { TEMPLATES } from './templates.jsx';
-import { SAMPLE, SAMPLE_STYLES, DEFAULT_STYLE } from './sample.js';
+import { SAMPLE, SAMPLE_STYLES, SAMPLE_SIDE, DEFAULT_STYLE } from './sample.js';
 import { textToHtml, sanitize } from './richtext.js';
 
 const KEY = 'smoothcv:v1';
@@ -28,15 +28,23 @@ const untouchedSample = (d) =>
   d.isSample || (d.personal.name === 'Jordan Avery' && d.personal.email === 'jordan.avery@example.com');
 
 function load() {
+  let template = 'clean';
   try {
     const d = JSON.parse(localStorage.getItem(KEY));
-    if (d?.personal && Array.isArray(d.sections) && !untouchedSample(d)) return normalize(d);
+    if (d?.personal && Array.isArray(d.sections)) {
+      if (!untouchedSample(d)) return normalize(d);
+      if (d.isSample && TEMPLATES[d.template]) template = d.template; // keep the template picked on the sample
+    }
   } catch {}
-  return normalize(SAMPLE);
+  return sampleFor(template);
 }
 
 // The untouched sample carries spacing tuned so it fills one page in each template.
-const sampleFor = (template) => normalize({ ...SAMPLE, template, style: SAMPLE_STYLES[template] ?? DEFAULT_STYLE });
+const sampleFor = (template) => {
+  const side = SAMPLE_SIDE[template];
+  const sections = side ? SAMPLE.sections.map((s) => ({ ...s, side: side.includes(s.id) })) : SAMPLE.sections;
+  return normalize({ ...SAMPLE, template, sections, style: SAMPLE_STYLES[template] ?? DEFAULT_STYLE });
+};
 
 const SWATCHES =['#1f5f6b', '#2f4f9e', '#6d4bc2', '#b03a6a', '#c0562d', '#2f7d55', '#2b2b2b'];
 

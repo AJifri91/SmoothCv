@@ -74,9 +74,12 @@ export default function Preview({ data }) {
       setPages(paginate(measured, capacity, topEl ? topEl.getBoundingClientRect().height : 0));
     };
     run();
-    document.fonts?.ready.then(run); // re-pack once web/system fonts settle
+    // Re-pack when fonts arrive: each template's font loads the first time that template is shown.
+    document.fonts?.ready.then(run);
+    document.fonts?.addEventListener('loadingdone', run);
     return () => {
       alive = false;
+      document.fonts?.removeEventListener('loadingdone', run);
     };
   }, [data]);
 
