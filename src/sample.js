@@ -48,7 +48,7 @@ export const SAMPLE = {
           date: '2021 – Present',
           location: 'Remote',
           description:
-            '- Led redesign of the dispatch console used by 1,200 operators; cut task time by 31%.\n- Built a 140-component design system shared by four product teams.\n- Mentored three junior designers through their first shipped features.',
+            '- Led redesign of the dispatch console used by 1,200 operators; cut task time by 31%.\n- Built a 140-component design system shared by four product teams.\n- Ran monthly usability sessions and turned findings into a prioritised roadmap.\n- Mentored three junior designers through their first shipped features.',
         },
         {
           id: 'e2',
@@ -82,6 +82,32 @@ export const SAMPLE = {
           location: 'Portland, OR',
           description: '',
         },
+      ],
+    },
+    {
+      id: 'proj',
+      title: 'Projects',
+      side: false,
+      entries: [
+        {
+          id: 'p1',
+          title: 'Open Transit Kit',
+          subtitle: 'Open-source UI kit',
+          date: '2022',
+          location: '',
+          description:
+            '- Accessible timetable and map components used by three regional transit agencies.\n- 900+ stars on GitHub; maintained with two volunteer engineers.',
+        },
+      ],
+    },
+    {
+      id: 'cert',
+      title: 'Certifications',
+      side: true,
+      inline: true,
+      entries: [
+        { id: 'c1', title: 'Certified Usability Analyst', subtitle: 'Human Factors International', date: '2020', location: '', description: '' },
+        { id: 'c2', title: 'Accessibility Specialist (CPACC)', subtitle: 'IAAP', date: '2019', location: '', description: '' },
       ],
     },
     {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Preview from './Preview.jsx';
+import ColorPicker from './ColorPicker.jsx';
 import { TEMPLATES } from './templates.jsx';
 import { SAMPLE, DEFAULT_STYLE } from './sample.js';
 import { textToHtml, sanitize } from './richtext.js';
@@ -236,13 +237,7 @@ export default function App() {
               onClick={() => edit((d) => (d.accent = c))}
             />
           ))}
-          <label
-            className={`sw custom${SWATCHES.includes(data.accent) ? '' : ' on'}`}
-            style={SWATCHES.includes(data.accent) ? undefined : { '--c': data.accent }}
-            title="Custom colour"
-          >
-            <input type="color" aria-label="Custom accent colour" value={data.accent} onChange={(e) => edit((d) => (d.accent = e.target.value))} />
-          </label>
+          <ColorPicker value={data.accent} selected={!SWATCHES.includes(data.accent)} onChange={(c) => edit((d) => (d.accent = c))} />
         </div>
         <span className="spacer" />
         <button

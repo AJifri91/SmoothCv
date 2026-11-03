@@ -80,10 +80,18 @@ export default function Preview({ data }) {
     };
   }, [data]);
 
+  // Fit the page to the pane width. Measured up front and on window resize as well,
+  // because ResizeObserver callbacks can be delayed (background tabs, some mobile browsers).
   useLayoutEffect(() => {
-    const ro = new ResizeObserver(([e]) => setScale(Math.min(1, (e.contentRect.width - 48) / PAGE_PX)));
+    const fit = () => setScale(Math.min(1, (paneRef.current.clientWidth - 64) / PAGE_PX));
+    fit();
+    const ro = new ResizeObserver(fit);
     ro.observe(paneRef.current);
-    return () => ro.disconnect();
+    window.addEventListener('resize', fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', fit);
+    };
   }, []);
 
   const shown = pages ?? [Object.fromEntries(Object.entries(cols).map(([c, l]) => [c, l.map((b) => b.key)]))];
