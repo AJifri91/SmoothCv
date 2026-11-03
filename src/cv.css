@@ -1,0 +1,87 @@
+﻿/* A4 page + the three templates. Sizes in mm/pt/em so screen and print match.
+   Spacing knobs arrive as CSS variables set on .page by Preview. */
+.page {
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  display: flex;
+  background: #fff;
+  color: #262626;
+  font-size: var(--fs);
+  line-height: var(--lh);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.page.measuring { height: auto; align-items: flex-start; }
+.col { min-width: 0; }
+.col-main { flex: 1; }
+.blk { display: flow-root; }
+.blk-heading { padding-bottom: 1.8mm; }
+.blk-entry { padding-bottom: var(--entry-gap); }
+.blk.last, .blk-header { padding-bottom: var(--section-gap); }
+.page h1, .page h2, .page p, .page ul, .page ol { margin: 0; }
+.page h1 { font-size: 2.3em; line-height: 1.15; }
+.page h2 { font-size: 1.1em; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
+.role { font-size: 1.26em; color: var(--accent); margin-top: 1mm; }
+.contact { display: flex; flex-wrap: wrap; gap: 0.5mm 4mm; margin-top: 2.5mm; color: #555; }
+.desc { margin-top: 1mm; }
+.desc > * + * { margin-top: 1mm; }
+.desc ul, .desc ol { padding-left: var(--indent); }
+.desc li + li { margin-top: 0.4mm; }
+.desc a { color: inherit; }
+.e-title { font-weight: 700; }
+.e-sub { color: #555; }
+.e-sub:empty, .e-date:empty, .e-loc:empty { display: none; }
+.e-meta { float: right; text-align: right; margin-left: 4mm; color: #666; font-size: 0.93em; }
+.e-meta span { display: block; }
+
+/* Photo: size + shape knobs */
+.photo { width: var(--photo); height: var(--photo); object-fit: cover; display: block; flex: none; }
+.photo-circle .photo { border-radius: 50%; }
+.photo-rounded .photo { border-radius: 3mm; }
+.hdr { display: flex; align-items: center; gap: 6mm; }
+.hdr-text { flex: 1; min-width: 0; }
+
+/* 1. Clean: serif, centred header, ruled headings */
+.tpl-clean { font-family: Georgia, 'Times New Roman', serif; }
+.tpl-clean .col-main { padding: var(--my) var(--mx); }
+.tpl-clean .hdr { flex-direction: column; gap: 3mm; text-align: center; }
+.tpl-clean .hdr-text { width: 100%; }
+.tpl-clean h1 { font-weight: 400; letter-spacing: 0.03em; font-size: 2.5em; }
+.tpl-clean .role { font-style: italic; }
+.tpl-clean .contact { justify-content: center; }
+.tpl-clean .contact span + span::before { content: '·'; margin-right: 4mm; color: #aaa; }
+.tpl-clean h2 { border-bottom: 0.3mm solid #c9c9c9; padding-bottom: 1mm; font-weight: 400; letter-spacing: 0.16em; }
+
+/* 2. Sidebar: sans, full-height accent column */
+.tpl-sidebar { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+.tpl-sidebar .col-side { width: 64mm; flex: none; background: var(--accent); color: #fff; padding: var(--my) 7mm; }
+.tpl-sidebar .col-main { padding: var(--my) var(--mx) var(--my) 10mm; }
+.tpl-sidebar h1 { font-size: 2.7em; font-weight: 700; color: #1d1d1d; }
+.tpl-sidebar .col-main h2 { border-left: 1.2mm solid var(--accent); padding-left: 2.5mm; }
+.tpl-sidebar .col-side h2 { color: #fff; opacity: 0.85; border-bottom: 0.3mm solid rgba(255, 255, 255, 0.4); padding-bottom: 1mm; }
+.tpl-sidebar .col-side .photo { margin: 0 auto; border: 0.8mm solid rgba(255, 255, 255, 0.6); }
+.tpl-sidebar .col-side .contact { flex-direction: column; color: #fff; margin: 0; overflow-wrap: anywhere; }
+.tpl-sidebar .col-side .e-meta { float: none; text-align: left; margin: 0; color: rgba(255, 255, 255, 0.75); }
+.tpl-sidebar .col-side .e-sub { color: rgba(255, 255, 255, 0.8); }
+.tpl-sidebar .col-side .blk-entry { padding-bottom: calc(var(--entry-gap) * 0.7); }
+.tpl-sidebar .col-side .blk.last { padding-bottom: var(--section-gap); }
+
+/* 3. Banner: accent band on page 1, dates in a left rail */
+.tpl-banner { font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; }
+.tpl-banner .col-main { padding: var(--my) var(--mx); }
+/* negative margins bleed the band into the page padding; flow-root keeps the measured height honest */
+.tpl-banner .hdr {
+  flex-direction: row-reverse;
+  margin: calc(var(--my) * -1) calc(var(--mx) * -1) 0;
+  padding: 12mm var(--mx) 9mm;
+  background: var(--accent);
+  color: #fff;
+}
+.tpl-banner .photo { border: 0.8mm solid rgba(255, 255, 255, 0.7); }
+.tpl-banner .role, .tpl-banner .hdr .contact { color: rgba(255, 255, 255, 0.88); }
+.tpl-banner h1 { font-size: 2.6em; letter-spacing: 0.02em; }
+.tpl-banner h2 { display: inline-block; background: color-mix(in srgb, var(--accent) 12%, #fff); padding: 0.8mm 3mm; border-radius: 1mm; letter-spacing: 0.12em; }
+.tpl-banner .entry { display: grid; grid-template-columns: 30mm 1fr; column-gap: 5mm; }
+.tpl-banner .e-meta { float: none; text-align: left; margin: 0; }
+.tpl-banner .e-date { font-weight: 700; color: var(--accent); }
