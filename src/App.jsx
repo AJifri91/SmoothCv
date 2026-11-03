@@ -46,6 +46,18 @@ function readPhoto(file) {
   });
 }
 
+// Four horizontal lines; widths and anchoring show the alignment.
+function AlignIcon({ lines, center, right }) {
+  return (
+    <svg width="16" height="14" viewBox="0 0 16 14" aria-hidden="true">
+      {lines.map((w, i) => {
+        const x = right ? 15 - w : center ? (16 - w) / 2 : 1;
+        return <rect key={i} x={x} y={1 + i * 3.4} width={w} height="1.6" rx="0.8" fill="currentColor" />;
+      })}
+    </svg>
+  );
+}
+
 function RichText({ label, value, onChange }) {
   const ref = useRef(null);
   // Only push outside changes into the editor; re-setting our own HTML would reset the caret.
@@ -78,6 +90,12 @@ function RichText({ label, value, onChange }) {
           {btn('Underline', () => run('underline'), <u>U</u>)}
           {btn('Bullet list', () => run('insertUnorderedList'), '•≡')}
           {btn('Numbered list', () => run('insertOrderedList'), '1.')}
+          <span className="rt-sep" />
+          {btn('Align left', () => run('justifyLeft'), <AlignIcon lines={[14, 9, 14, 9]} />)}
+          {btn('Align centre', () => run('justifyCenter'), <AlignIcon lines={[14, 8, 14, 8]} center />)}
+          {btn('Align right', () => run('justifyRight'), <AlignIcon lines={[14, 9, 14, 9]} right />)}
+          {btn('Justify', () => run('justifyFull'), <AlignIcon lines={[14, 14, 14, 14]} />)}
+          <span className="rt-sep" />
           {btn('Link', link, '🔗')}
           {btn('Remove link', () => run('unlink'), '×🔗')}
           {btn('Clear formatting', () => run('removeFormat'), 'Tx')}

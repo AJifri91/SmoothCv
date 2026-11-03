@@ -88,6 +88,8 @@ summary::marker { color: var(--muted); }
 .rt-bar { display: flex; flex-wrap: wrap; gap: 2px; padding: 4px; border-bottom: 1px solid var(--line); background: #faf9f7; border-radius: 6px 6px 0 0; }
 .rt-bar button { border: 0; background: none; min-width: 28px; height: 26px; border-radius: 5px; color: var(--text); font-size: 13px; }
 .rt-bar button:hover { background: var(--line); }
+.rt-bar button svg { display: block; margin: auto; }
+.rt-sep { width: 1px; margin: 3px 4px; background: var(--line); }
 .rt-area { min-height: 80px; padding: 8px 10px; font-size: 14px; color: var(--text); line-height: 1.45; outline: none; }
 .rt-area p, .rt-area ul, .rt-area ol { margin: 0; }
 .rt-area ul, .rt-area ol { padding-left: 20px; }

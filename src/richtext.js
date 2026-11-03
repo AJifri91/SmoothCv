@@ -3,6 +3,8 @@
 const ALLOWED = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'A', 'UL', 'OL', 'LI', 'P', 'DIV', 'BR']);
 const DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'TEMPLATE']);
 const SAFE_HREF = /^(https?:|mailto:)/i;
+const ALIGNS = new Set(['left', 'center', 'right', 'justify']);
+const BLOCKS = new Set(['P', 'DIV', 'LI', 'UL', 'OL']);
 
 export function sanitize(html) {
   const doc = new DOMParser().parseFromString(`<body>${html ?? ''}</body>`, 'text/html');
@@ -17,9 +19,13 @@ export function sanitize(html) {
         el.replaceWith(...el.childNodes);
         continue;
       }
+      // read before attributes are stripped; Firefox's justify commands write align="" instead of a style
+      const align = el.style.textAlign || (el.getAttribute('align') ?? '').toLowerCase();
       for (const a of [...el.attributes]) {
         if (!(el.tagName === 'A' && a.name === 'href' && SAFE_HREF.test(a.value.trim()))) el.removeAttribute(a.name);
       }
+      // the only style kept: alignment set by the editor's align buttons
+      if (ALIGNS.has(align) && BLOCKS.has(el.tagName)) el.setAttribute('style', `text-align: ${align}`);
     }
   };
   walk(doc.body);
