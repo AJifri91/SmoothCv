@@ -22,9 +22,10 @@ function normalize(d) {
 }
 
 // An untouched sample is swapped for the current one, so sample updates reach returning visitors.
-// Saves from before the isSample flag count as untouched while they still carry the sample identity.
+// The retired Jordan Avery sample is always replaced: tapping a template or colour on it marked it
+// edited, which left those visitors stuck on the old sample.
 const untouchedSample = (d) =>
-  d.isSample ?? (d.personal.name === 'Jordan Avery' && d.personal.email === 'jordan.avery@example.com');
+  d.isSample || (d.personal.name === 'Jordan Avery' && d.personal.email === 'jordan.avery@example.com');
 
 function load() {
   try {
